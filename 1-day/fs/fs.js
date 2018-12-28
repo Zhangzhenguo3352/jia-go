@@ -95,14 +95,37 @@ let fs8 = require('fs');
 const BUFFER_SIZE = 3; // 缓存大小为 3
 function copy(src, target) {
     fs8.open(src, 'r', 0o666, function(err, readFile) {
+        // w 清空并写入
         fs8.open(target, 'w', 0o666, function(err, writeFile) {
+            console.log('writeFile22', writeFile)
             let buff = Buffer.alloc(BUFFER_SIZE);
             ! function next() {
-                fs8.rend(readFd, buff, 0, BUFFER_SIZE, null, function(err, byteRead, buffer) {
-
+                fs8.read(readFile, buff, 0, BUFFER_SIZE, null, function(err, byteRead, buffer) {
+                    // 读取的有数据
+                    if (byteRead > 0) {
+                        //byteRead 读几个写几个
+                        // writeFile 文件描述符
+                        fs8.write(writeFile, buff, 0, byteRead, null, next)
+                    }
                 });
             }()
         })
     })
 }
-copy();
+copy('./1.txt', './3.txt');
+
+
+// write() 写入文件
+let fs9 = require('fs');
+fs9.open('./2.txt', 'w', 0o666, function(err, fdx) {
+    fs9.write(fdx, Buffer.from('珠峰'), 0, 1, null, function(err, byteWrite) {
+        console.log('fs9 写入文件的数量', byteWrite);
+        // fs9.fsync 强行的把缓存区的数据写入文件，并且关闭
+        fs9.fsync(fdx, function(err) {
+            // 关闭文件 (打开这个会报错)
+            // fs9.close(function() {
+            //     console.log('fs9 关闭')
+            // });
+        })
+    })
+})

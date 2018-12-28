@@ -1,0 +1,80 @@
+<template>
+    <div class="doc-page">
+        <div class="content">
+            <canvas class="new-canvas" id="new-canvas"></canvas>
+        </div>
+    </div>
+</template>
+
+<style>
+    .content {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .new-canvas {
+        height: 380px;
+        width: 380px;
+    }
+</style>
+
+<script>
+    export default {
+        private: {
+            drawComplete: false
+        },
+        onInit() {
+            this.$page.setTitleBar({
+                text: 'canvas简单绘制'
+            })
+        },
+        onShow() {
+            if (!this.drawComplete) {
+                this.drawCanvas()
+            }
+        },
+        drawCanvas() {
+            const canvas = this.$element('new-canvas') //获取 canvas 组件
+            const ctx = canvas.getContext('2d') //获取 canvas 绘图上下文
+
+            //绘制一个矩形
+            ctx.fillStyle = 'rgb(200,0,0)'
+            ctx.fillRect(20, 20, 200, 200)
+
+            //绘制另一个矩形
+            ctx.fillStyle = 'rgba(0, 0, 200, 0.5)'
+            ctx.fillRect(80, 80, 200, 200)
+
+            this.drawComplete = true
+        }
+    }
+</script>
+
+
+
+
+
+<!-- <template>
+  <div class="demo-page">
+    <text>{{text}}</text>
+    <text>{{des}}</text>
+  </div>
+</template>
+
+<style>
+  .demo-page {
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>
+
+<script>
+  export default {
+    private: {
+      text: '欢迎使用快应用卡片',
+      des: '卡片是一种轻量级的快应用，快应用卡片使快应用能够在其他app和系统里提供可扩展的app功能'
+    }
+  }
+</script> -->
