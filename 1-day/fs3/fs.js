@@ -73,7 +73,7 @@ fs4.truncate('./2.txt', 4, function() {
     console.log('我规定的4 截取完成')
 })
 
-// 同步删除文件 或 目录
+// 同步删除非空 文件 或 目录
 let fs5 = require('fs');
 let path2 = require('path');
 
@@ -91,4 +91,54 @@ function rmdirFn(dir) {
     fs5.rmdirSync(dir);
 
 }
-rmdirFn('b');
+// rmdirFn('b');
+
+
+// 三角形式的方式得到路径
+let fs6 = require('fs');
+let path3 = require('path');
+
+function preDeep(dir, callback) {
+    console.log('fs6 dir', dir)
+        //得到这个文件的 所有文件名字
+    fs6.readdir(dir, (err, file) => {
+        // file   这个文件下面的 子级名字   
+        console.log('fs6 file', file) // fs6 [ 'b', 'c' ]
+            ! function next2(i) {
+                // i 2 => file.length 2
+                console.log('i', i, '=> file.length', file.length)
+                if (i >= file.length) return callback();
+                let child = path3.join(dir, file[i]);
+                fs6.stat(child, (err, stat) => {
+                    if (stat.isDirectory()) {
+                        preDeep(child, () => next2(i + 1))
+                    } else {
+                        console.log('fs6 child', child)
+                        next2(i + 1)
+                    }
+                });
+            }(0)
+    })
+}
+preDeep('a', () => {
+    console.log('全部迭代完毕');
+})
+
+// watchFile 监控文件的变化的方法
+let fs7 = require('fs');
+// 1 当前的状态  2 以前的转台对象
+fs7.watchFile('3.txt', function(curr, prev) {
+    console.log('Date.parse()', Date.parse()) // NaN
+    console.log('curr.ctime', curr.ctime) // 1970-01-01T00:00:00.000Z
+    console.log('prev.ctime', prev.ctime) // 1970-01-01T00:00:00.000Z
+    console.log('Date.parse(curr.ctime)', Date.parse(curr.ctime))
+    if (Date.parse(prev.ctime) == 0 && Date.parse(curr.ctime) == 0) {
+        console.log('没有这个我就爱你');
+    } else if (Date.parse(curr.ctime) != Date.parse(curr.ctime)) {
+        console.log('修改')
+    } else if (Date.parse(curr.ctime) == 0) {
+        console.log('删除 ')
+    } else if (Date.parse(prev.ctime) == 0) {
+        console.log('创建 ')
+    }
+})
