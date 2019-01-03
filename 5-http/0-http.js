@@ -31,6 +31,8 @@ async function request(req, res) {
         console.log('mime.getType', mime.getType(pathname)); //  text/html
         // // 可以根据不同文件类型，返回不同的Content-type
         res.setHeader('Content-Type', mime.getType(pathname));
+        //根据浏览器支持的类型，给浏览器不同的压缩文件，
+        //
         fs.createReadStream(filepath).pipe(res); // 读取 并 在客户端打印
 
     } catch (e) {
